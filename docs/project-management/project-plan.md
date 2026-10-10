@@ -26,7 +26,7 @@
 ## 2. Agile 추진원칙
 
 1. 작업은 사용자 가치가 드러나는 작은 단위(User Story, Issue)로 나눈다.
-2. Product Owner(교수자)와 팀장이 우선순위를 정하고, Sprint 중에는 Sprint 목표를 유지한다.
+2. Product Owner(팀장 겸임)가 우선순위를 정하고, Sprint 중에는 Sprint 목표를 유지한다.
 3. 각 Sprint 종료 시 산출물을 Review하고, 피드백을 다음 Sprint Backlog에 반영한다.
 4. OSS는 문서 조사만으로 결정하지 않고, 가능한 경우 간단한 기능 확인 결과를 반영한다.
 5. 라이선스·보안 검토는 마지막 Sprint에 몰지 않고 모든 Sprint의 DoD에 포함한다.
@@ -71,12 +71,13 @@
 
 | 이름 | 팀 역할 | Scrum 역할 | 주요 책임 | 담당 Issue |
 |---|---|---|---|---|
-| 교수자 | - | Product Owner | 실습 목표 제시, 과제 범위 승인, 결과 검토 | - |
-| 이정남 | 팀장 | Scrum Master, Developer | Sprint 운영·일정 관리, GitHub Repository 관리, PR Merge, 기능 개발 | #1, #6, #9 |
+| 교수자 | - | Stakeholder (최종 검토자) | 실습 목표 제시, 과제 범위 승인, 결과 검토·평가 | - |
+| 이정남 | 팀장 | Product Owner, Scrum Master, Developer | Backlog 우선순위 결정, Sprint 결과 수용 판단, Sprint 운영·일정 관리, GitHub Repository 관리, PR Merge, 기능 개발 | #1, #6, #9 |
 | 이석환 | 개발자 | Developer | 산출물 작성, OSS 조사, 기능 개발 | #2, #4, #7 |
 | 이지선 | Reviewer | Developer | 전체 PR 검토(정확성·객관성·일관성), 산출물 작성 | #3, #5, #8 |
 | 전원 | - | - | 최종보고서·Sprint Review·회고 | #10 |
 
+- **Product Owner 겸임:** 교수자 안내에 따라 팀원 중 1명을 Product Owner로 지정하였으며, 소규모 팀 특성상 팀장이 겸임한다. 역할 집중을 보완하기 위해 PR 검토·승인은 Reviewer(이지선)가 별도로 수행한다.
 - **Repository 관리:** 팀장이 Branch 규칙 관리, PR Merge, 작업 Branch 정리를 맡는다.
 - **Review:** 이지선이 주 Reviewer로 모든 PR을 검토한다. 이지선이 작성한 PR은 팀장이 검토한다.
 
