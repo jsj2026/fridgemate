@@ -20,8 +20,18 @@
 | #9 | 최종 OSS 선정 및 통합 적용방안 | OSS 선정 | 4주 | 이정남 | OSS 최종선정서·통합설계서 | `docs/oss-evaluation/`, `docs/adr/` |
 | #10 | 산출물 통합·Sprint Review·Retrospective | 과제 완료 | 5주 | 전원 | 최종보고서·발표자료·회고 결과서 | `docs/final/` |
 
-> 담당자는 2026-10-02 팀 협의로 정한 역할(팀장 이정남, 개발자 이석환, Reviewer 이지선) 기준이다. 모든 PR은 Reviewer(이지선)가 검토하며, 이지선이 작성한 PR은 팀장이 검토한다.
+> 담당자는 2026-10-02 팀 협의로 정한 역할(팀장·Product Owner 이정남, 개발자 이석환, Reviewer 이지선) 기준이다. 모든 PR은 Reviewer(이지선)가 검토하며, 이지선이 작성한 PR은 팀장이 검토한다.
 > 팀 저장소에는 이미 #1~#6 번호가 사용되어 있으므로, 실제 GitHub 번호와 구분하기 위해 Issue 제목 앞에 `[Issue #1]` 형식의 접두어를 붙인다.
+
+### GitHub 번호 대응표
+
+| 문서상 Issue | GitHub 번호 | 담당 |
+|---|---|---|
+| [Issue #1] 프로젝트 추진계획 수립 | #7 | 이정남 |
+| [Issue #2] 프로젝트 개요·배경·문제·목표·범위 정의 | #8 | 이석환 |
+| [Issue #3] 이해관계자·User Class·운용개념·핵심 시나리오 정의 | #9 | 이지선 |
+| [Issue #4] User Class별 기능 요구사항 정의 | #12 | 이석환 |
+| [Issue #5] 비기능·데이터·인터페이스 요구사항 정의 | #13 | 이지선 |
 
 ## 2. 공통 Label
 
@@ -143,5 +153,81 @@ FridgeMate를 누가, 어떤 환경에서, 어떻게 사용하는지 운용개�
 ## 완료 조건 (Acceptance Criteria)
 - 모든 User Class에 대해 1개 이상의 운용 시나리오가 있다.
 - Issue #4 기능 요구사항으로 전환할 항목이 식별되어 있다.
+- 팀원 1명 이상이 Review하고 Approve한다.
+```
+
+---
+
+## 4. 2주차 등록 Issue 본문
+
+> GitHub 본문에서 `#숫자`는 자동으로 링크되므로, 아직 등록되지 않은 Issue는 백틱으로 감싸 표기한다. 선행 Issue는 실제 GitHub 번호(#9)로 연결한다.
+
+### [Issue #4] User Class별 기능 요구사항 정의
+
+- **Labels:** `requirements`, `documentation`
+- **Assignee:** 이석환 (stonemark77)
+- **Reviewer:** 이지선
+- **Milestone:** Sprint 2
+- **Branch:** `docs/4-functional-requirements`
+
+```markdown
+## 목적
+운용개념서의 User Class와 운용 시나리오에서 FridgeMate의 기능 요구사항을 도출한다.
+
+## 수행 내용
+- [ ] 요구사항 작성규칙(ID, 출처, 우선순위 P0~P2, 검증방법 T/D/I/A) 정의
+- [ ] 회원·인증, 냉장고 그룹·공유 요구사항 작성
+- [ ] 식재료 등록(바코드·직접 입력) 요구사항 작성
+- [ ] 식재료 조회·관리, 소비·폐기 처리 요구사항 작성
+- [ ] 유통기한 알림, 레시피 추천 요구사항 작성
+- [ ] 오프라인·서비스 관리 요구사항 작성
+- [ ] 기능 요구사항 품질점검
+
+## 선행 Issue
+- #9
+
+## 산출물
+- docs/requirements/functional-requirements.md
+
+## 완료 조건 (Acceptance Criteria)
+- 모든 요구사항에 ID, 출처, 우선순위, 검증방법이 있다.
+- 모든 운용 시나리오가 1개 이상의 기능 요구사항과 연결된다.
+- 팀원 1명 이상이 Review하고 Approve한다.
+```
+
+---
+
+### [Issue #5] 비기능·데이터·인터페이스 요구사항 정의
+
+- **Labels:** `requirements`, `documentation`
+- **Assignee:** 이지선 (ljs2230-cpu)
+- **Reviewer:** 이정남
+- **Milestone:** Sprint 2
+- **Branch:** `docs/5-nfr-interface`
+
+```markdown
+## 목적
+FridgeMate의 성능·신뢰성·보안·사용성 등 비기능 요구사항과 데이터·인터페이스 요구사항을 측정 가능한 수치로 정의한다.
+
+## 수행 내용
+- [ ] 성능, 정확도·신뢰성, 가용성 요구사항 작성
+- [ ] 보안·개인정보, 사용성, 호환성 요구사항 작성
+- [ ] 유지보수성·OSS 적합성 요구사항 작성
+- [ ] 주요 데이터와 데이터 규칙 정의
+- [ ] 인터페이스 목록과 인터페이스별 요구사항 작성
+- [ ] 요구사항 추적표 작성 (팀장 작성, 공동 검토)
+
+## 선행 Issue
+- #9
+
+## 산출물
+- docs/requirements/non-functional-requirements.md
+- docs/requirements/interface-requirements.md
+- docs/requirements/requirements-traceability-matrix.md
+
+## 완료 조건 (Acceptance Criteria)
+- 모든 비기능 요구사항에 측정 수치와 측정조건이 있다.
+- 프로젝트 정의서의 정량 목표가 비기능 요구사항으로 연결된다.
+- 외부개체가 모두 인터페이스 요구사항에 포함된다.
 - 팀원 1명 이상이 Review하고 Approve한다.
 ```
