@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FridgeMate · 사진 촬영 버전</title>
+<meta name="theme-color" content="#96ded1">
+<style>
+:root{--bg:#eef3f2;--panel:#fff;--fg:#14211f;--muted:#5d6e6b;--line:#d5e0de;--accent:#0f7a6c;--soft:#dcefeb;--bad:#c23b2e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Apple SD Gothic Neo",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:520px;margin:auto;padding:18px 16px 150px}header{display:flex;justify-content:space-between;align-items:center}h1{font-size:30px;margin:0}.sub,.muted{color:var(--muted);font-size:13px}.temps{font-size:12px;color:var(--accent);background:var(--soft);padding:5px 9px;border-radius:99px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0}.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}.stat b{display:block;font-size:27px}.stat small{color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{flex:1;background:var(--panel);border:1px solid var(--line);padding:10px 3px;border-radius:10px}.tabs button[aria-pressed=true]{background:var(--accent);color:white}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.item{display:flex;gap:12px;align-items:center;padding:12px;border-top:1px solid var(--line)}.item:first-child{border:0}.ico{background:var(--soft);padding:8px;border-radius:9px}.itemmain{flex:1;min-width:0}.itemmain strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.itemmain small{color:var(--muted)}.dday{font-size:12px;border-radius:99px;background:#e3f3e8;color:#2f7d4f;padding:4px 8px}.dday.warn{background:#fff2dc;color:#b26a00}.dday.bad{background:#fde6e3;color:#c23b2e}.del{border:0;background:none;color:var(--muted);font-size:19px}.empty{padding:25px;text-align:center;color:var(--muted)}
+.addbar{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);padding:12px 14px calc(12px + env(safe-area-inset-bottom))}.addbar form{max-width:520px;margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:7px}.addbar input,.addbar select{min-width:0;width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}.addbar button,.actions button{padding:11px;border:0;border-radius:10px;background:var(--accent);color:white;font-weight:600}.addbar #fName{grid-column:span 2}.addbar #photoOpen{background:var(--soft);color:var(--accent)}
+.modal[hidden],[hidden]{display:none!important}.modal{position:fixed;inset:0;background:#000a;z-index:20;display:grid;place-items:center;padding:12px}.panel{background:var(--panel);border-radius:17px;padding:16px;width:min(100%,460px);max-height:93dvh;overflow-y:auto}.panel h2{margin:0;font-size:21px}.panel video,.panel img{width:100%;max-height:260px;object-fit:contain;border-radius:10px;background:#10201c;margin:10px 0}.actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.actions button{flex:1;min-width:105px}.actions .alt{background:var(--soft);color:var(--accent)}.panel label.field{display:block;font-weight:600;margin-top:10px}.panel input:not([type=file]),.panel textarea{display:block;width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px}.panel textarea{min-height:75px}.filepick{position:relative;overflow:hidden;background:var(--soft);color:var(--accent);padding:11px;border-radius:10px;flex:1;text-align:center}.filepick input{position:absolute;inset:0;opacity:0;width:100%;height:100%}
+</style></head><body>
+<div class="app"><header><div><h1>FridgeMate</h1><div class="sub">우리 집 냉장고 재료와 소비기한</div></div><span class="temps">냉장 3℃ · 냉동 −18℃</span></header>
+<section class="summary"><div class="stat"><b id="sTotal">0</b><small>보관 중</small></div><div class="stat"><b id="sSoon">0</b><small>3일 이내</small></div><div class="stat"><b id="sOver">0</b><small>기한 지남</small></div></section>
+<nav class="tabs" id="tabs"><button data-f="전체" aria-pressed="true">전체</button><button data-f="냉장" aria-pressed="false">냉장</button><button data-f="냉동" aria-pressed="false">냉동</button><button data-f="실온" aria-pressed="false">실온</button></nav>
+<section class="list" id="list"></section><p class="muted">저장 데이터는 현재 웹사이트의 이 기기 브라우저에 저장됩니다. 기존 GitHub 앱과는 별도 주소에서 데이터가 공유되지 않습니다.</p></div>
+<div class="addbar"><form id="form"><input id="fName" placeholder="재료 이름 (예: 우유)" required><select id="fPlace"><option>냉장</option><option>냉동</option><option>실온</option></select><input id="fDate" type="date" required><button type="button" id="photoOpen">📷 제품 촬영</button><button type="submit">추가 저장</button></form></div>
+<div id="photoModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="photoTitle"><div class="panel">
+<h2 id="photoTitle">📷 2단계 제품 촬영</h2>
+<p class="muted">① 제품 앞면 → ② 소비기한 인쇄 부분을 각각 촬영합니다.</p>
+<div class="actions"><button type="button" id="stepFront" class="alt">① 제품 앞면</button><button type="button" id="stepDate" class="alt">② 소비기한</button></div>
+<p id="stepGuide" class="muted">1단계: 제품 이름이 선명하게 보이도록 앞면을 촬영하세요.</p>
+<video id="photoVideo" autoplay muted playsinline hidden></video><img id="photoPreview" alt="촬영 이미지" hidden>
+<div class="actions"><button id="photoStart" type="button">카메라 켜기</button><button id="photoShoot" type="button" hidden>📸 촬영하기</button><label class="filepick">🖼️ 사진 선택<input id="photoChoose" type="file" accept="image/*"></label><button id="photoClose" type="button" class="alt">닫기</button></div>
+<p id="photoStatus" class="muted" aria-live="polite">먼저 제품 앞면을 촬영해 주세요.</p>
+<div class="actions"><button id="photoOCR" type="button" class="alt">무료 OCR 분석</button><button id="photoAI" type="button">✨ AI 이미지 분석</button></div>
+<p class="muted">AI 분석은 Netlify Functions와 서버 환경변수 OPENAI_API_KEY 설정이 필요합니다. 키를 브라우저에 입력하지 마세요.</p>
+<div id="photoReview" hidden>
+<label class="field">상품명 (확인·수정)</label><input id="photoName" placeholder="상품명을 입력하세요">
+<label class="field">소비기한 (확인·수정)</label><input id="photoDate" type="date">
+<label class="field">분석 결과 및 인식 글자</label><textarea id="photoText" readonly></textarea>
+<div class="actions"><button id="photoApply" type="button">✓ 확인 후 입력란에 적용</button></div>
+<p class="muted">AI 추정은 틀릴 수 있습니다. 제조일자와 소비기한을 구분하여 확인한 뒤 추가 저장하세요.</p>
+</div>
+</div></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),KEY='fridgemate-items';
+const icons={우유:'🥛',계란:'🥚',두부:'🧈',대파:'🥬',삼겹살:'🥓',만두:'🥟',양파:'🧅',사과:'🍎'};
+function day(n){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+const sample=[{id:1,name:'우유',place:'냉장',date:day(2)},{id:2,name:'계란',place:'냉장',date:day(9)},{id:3,name:'두부',place:'냉장',date:day(-1)},{id:4,name:'대파',place:'냉장',date:day(4)},{id:5,name:'만두',place:'냉동',date:day(60)},{id:6,name:'삼겹살',place:'냉동',date:day(25)},{id:7,name:'양파',place:'실온',date:day(12)}];
+let items;try{items=JSON.parse(localStorage.getItem(KEY))}catch{}if(!Array.isArray(items))items=sample;
+const save=()=>localStorage.setItem(KEY,JSON.stringify(items));
+const diff=s=>Math.round((new Date(s+'T12:00:00')-new Date(day(0)+'T12:00:00'))/864e5);
+let filter='전체';
+function render(){
+ const shown=items.filter(x=>filter==='전체'||x.place===filter).sort((a,b)=>diff(a.date)-diff(b.date));
+ $('sTotal').textContent=items.length;$('sSoon').textContent=items.filter(x=>diff(x.date)>=0&&diff(x.date)<=3).length;$('sOver').textContent=items.filter(x=>diff(x.date)<0).length;
+ $('list').replaceChildren();
+ if(!shown.length){const e=document.createElement('div');e.className='empty';e.textContent='등록된 재료가 없습니다.';$('list').append(e);return}
+ for(const x of shown){
+  const row=document.createElement('div');row.className='item';
+  const ico=document.createElement('span');ico.className='ico';ico.textContent=icons[x.name]||'🧊';
+  const main=document.createElement('div');main.className='itemmain';
+  const name=document.createElement('strong');name.textContent=x.name;
+  const small=document.createElement('small');small.textContent=x.place+' · '+x.date;
+  main.append(name,small);
+  const d=diff(x.date),dd=document.createElement('span');dd.className='dday '+(d<0?'bad':d<=3?'warn':'');dd.textContent=d<0?'D+'+(-d):d===0?'D-DAY':'D-'+d;
+  const del=document.createElement('button');del.className='del';del.textContent='✕';del.setAttribute('aria-label',x.name+' 삭제');del.onclick=()=>{items=items.filter(y=>y.id!==x.id);save();render()};
+  row.append(ico,main,dd,del);$('list').append(row);
+ }
+}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;document.querySelectorAll('#tabs button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render()};
+$('fDate').value=day(7);
+$('form').onsubmit=e=>{e.preventDefault();const name=$('fName').value.trim(),date=$('fDate').value;if(!name||!date)return;items.push({id:Date.now(),name,place:$('fPlace').value,date});save();$('fName').value='';$('fDate').value=day(7);render()};
+
+let stream=null,previewURL=null,busy=false,step='front';
+const photos={front:null,date:null};
+function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}$('photoVideo').srcObject=null;$('photoVideo').hidden=true;$('photoShoot').hidden=true}
+function clearPreview(){if(previewURL)URL.revokeObjectURL(previewURL);previewURL=null;$('photoPreview').hidden=true;$('photoPreview').removeAttribute('src')}
+function status(s){$('photoStatus').textContent=s}
+function showStep(s){
+ step=s;stopCamera();clearPreview();
+ $('stepGuide').textContent=s==='front'?'1단계: 상품명이 크게 보이도록 제품 앞면을 촬영하세요.':'2단계: 소비기한 날짜가 인쇄된 부분을 가까이 촬영하세요.';
+ $('stepFront').style.fontWeight=s==='front'?'800':'400';
+ $('stepDate').style.fontWeight=s==='date'?'800':'400';
+ if(photos[s])showPreview(photos[s]);
+ status((photos.front?'앞면 ✓ ':'앞면 미촬영 · ')+(photos.date?'소비기한 ✓':'소비기한 미촬영'));
+}
+function showPreview(file){clearPreview();previewURL=URL.createObjectURL(file);$('photoPreview').src=previewURL;$('photoPreview').hidden=false}
+function closeModal(){stopCamera();clearPreview();$('photoModal').hidden=true;$('photoChoose').value=''}
+$('photoOpen').onclick=()=>{$('photoModal').hidden=false;$('photoReview').hidden=true;showStep('front')};
+$('photoClose').onclick=closeModal;
+$('stepFront').onclick=()=>showStep('front');
+$('stepDate').onclick=()=>showStep('date');
+async function startCamera(){
+ stopCamera();
+ if(!navigator.mediaDevices?.getUserMedia){status('카메라를 사용할 수 없습니다. HTTPS 사이트에서 Safari로 열어 주세요.');return}
+ try{
+  stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'}}});
+  $('photoVideo').srcObject=stream;$('photoVideo').hidden=false;$('photoShoot').hidden=false;
+  await $('photoVideo').play();status('촬영하기 버튼을 누르세요.');
+ }catch(e){status('카메라 접근 실패 ('+e.name+'). Safari 카메라 권한을 허용하거나 사진 선택을 이용하세요.')}
+}
+$('photoStart').onclick=startCamera;
+function capture(file){
+ if(!file)return;
+ photos[step]=file;stopCamera();showPreview(file);
+ $('photoReview').hidden=true;
+ if(step==='front'&&!photos.date){status('앞면 사진을 저장했습니다. 이제 소비기한을 촬영하세요.');showStep('date')}
+ else status('사진을 받았습니다. 두 사진을 확인한 후 OCR 또는 AI 분석을 누르세요.');
+}
+$('photoShoot').onclick=()=>{
+ const v=$('photoVideo');if(!stream||!v.videoWidth){status('카메라 준비 중입니다. 다시 시도하세요.');return}
+ const c=document.createElement('canvas'),scale=Math.min(1,2400/v.videoWidth);c.width=Math.round(v.videoWidth*scale);c.height=Math.round(v.videoHeight*scale);
+ c.getContext('2d').drawImage(v,0,0,c.width,c.height);c.toBlob(b=>{if(b)capture(new File([b],step+'.jpg',{type:'image/jpeg'}))},'image/jpeg',.92)
+};
+$('photoChoose').onchange=e=>{if(e.target.files?.[0])capture(e.target.files[0]);e.target.value=''};
+function extractDate(raw){
+ const marked=raw.split(/\n/).filter(s=>/소비기한|유통기한|까지|EXP|BEST BEFORE/i.test(s));
+ for(const s of [...marked.join('\n'),raw]){
+  const re=/(20\d{2})\s*[.\/-]\s*(\d{1,2})\s*[.\/-]\s*(\d{1,2})/g;let m;
+  while((m=re.exec(s))){const y=+m[1],mo=+m[2],d=+m[3],dt=new Date(y,mo-1,d);if(dt.getFullYear()===y&&dt.getMonth()===mo-1&&dt.getDate()===d)return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0')}
+ }
+ return '';
+}
+function extractName(raw){return raw.split(/\n/).map(x=>x.trim()).find(s=>s.length>=2&&s.length<=35&&!/소비기한|유통기한|원재료|영양정보|제조원|판매원|보관방법|내용량|\d{4}[.\/-]\d/.test(s)&&! /^\d/.test(s))||''}
+async function loadOCR(){
+ if(window.Tesseract)return;
+ await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=resolve;s.onerror=()=>reject(new Error('OCR 다운로드 실패'));document.head.append(s)})
+}
+function review(name,date,detail){$('photoName').value=name||'';$('photoDate').value=date||'';$('photoText').value=detail||'';$('photoReview').hidden=false}
+async function runOCR(){
+ if(busy)return;if(!photos.front&&!photos.date){status('먼저 사진을 촬영해 주세요.');return}
+ busy=true;status('무료 OCR 분석 중입니다.');let worker;
+ try{
+  await loadOCR();worker=await Tesseract.createWorker('kor+eng');
+  const front=photos.front?(await worker.recognize(photos.front)).data.text:'';
+  const date=photos.date?(await worker.recognize(photos.date)).data.text:'';
+  review(extractName(front),extractDate(date)||extractDate(front),'[제품 앞면]\n'+front+'\n[소비기한]\n'+date);
+  status('분석 완료. 상품명과 소비기한을 반드시 확인하세요.');
+ }catch(e){status('OCR 실패: '+e.message);review('','','직접 입력해 주세요.')}
+ finally{if(worker)try{await worker.terminate()}catch{}busy=false}
+}
+async function imageData(file){
+ if(!file)return null;
+ const bitmap=await createImageBitmap(file);
+ const c=document.createElement('canvas'),scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height));
+ c.width=Math.max(1,Math.round(bitmap.width*scale));c.height=Math.max(1,Math.round(bitmap.height*scale));
+ c.getContext('2d').drawImage(bitmap,0,0,c.width,c.height);bitmap.close?.();
+ return c.toDataURL('image/jpeg',.83);
+}
+async function runAI(){
+ if(busy)return;if(!photos.front||!photos.date){status('AI 분석에는 앞면과 소비기한 사진이 모두 필요합니다.');return}
+ busy=true;status('AI가 두 장의 사진을 분석하고 있습니다.');
+ try{
+  const images=await Promise.all([imageData(photos.front),imageData(photos.date)]);
+  const res=await fetch('/.netlify/functions/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({front:images[0],date:images[1]})});
+  let data;try{data=await res.json()}catch{throw new Error('서버 응답을 읽을 수 없습니다. Netlify Functions 배포를 확인하세요.')}
+  if(!res.ok)throw new Error(data.error||'서버 오류 '+res.status);
+  review(data.name||'',data.expiry||'',data.notes||'');
+  status('AI 분석 완료. 소비기한을 포장지 원본과 대조한 후 적용하세요.');
+ }catch(e){status('AI 분석 실패: '+e.message+' 무료 OCR로도 분석할 수 있습니다.')}
+ finally{busy=false}
+}
+$('photoOCR').onclick=runOCR;$('photoAI').onclick=runAI;
+$('photoApply').onclick=()=>{
+ const name=$('photoName').value.trim(),date=$('photoDate').value;
+ if(!name||!date){alert('상품명과 소비기한을 확인하고 입력해 주세요.');return}
+ $('fName').value=name;$('fDate').value=date;closeModal();$('fName').focus()
+};
+window.addEventListener('pagehide',stopCamera);render();
+</script></body></html>
