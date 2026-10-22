@@ -100,6 +100,17 @@ h2{font-family:var(--display);font-weight:400;font-size:1.4rem;margin:0 0 8px}
 .name small{color:var(--muted);font-size:.78rem}
 .empty{padding:28px 16px;text-align:center;color:var(--muted)}
 
+/* [이정남] 레시피 추천 (recipe.js) */
+.rc-card{display:flex;flex-direction:column;gap:10px}
+.rc-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rc-head h3{margin:0;font-size:1.05rem}
+.rc-row{display:flex;flex-direction:column;gap:4px}
+.rc-row small{color:var(--muted);font-size:.75rem}
+.rc-chip{display:inline-block;margin:0 4px 4px 0;padding:3px 10px;border-radius:999px;font-size:.82rem;font-weight:500}
+.rc-chip.have{background:var(--ok-bg);color:var(--ok)}
+.rc-chip.urgent{background:var(--soon-bg);color:var(--soon)}
+.rc-chip.missing{background:var(--over-bg);color:var(--over)}
+
 /* [이지선] 임박 요약 (alert.js) */
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
