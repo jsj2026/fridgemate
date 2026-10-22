@@ -11,152 +11,75 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="FridgeMate">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
-<style>
-/* Layout: one-column phone app — header with fridge temps, storage tabs, item list, sticky add bar */
-:root{
-  --bg:#eef3f2; --panel:#ffffff; --fg:#14211f; --muted:#5d6e6b; --line:#d5e0de;
-  --accent:#0f7a6c; --accent-ink:#ffffff; --soft:#dcefeb;
-  --ok:#2f7d4f; --warn:#b26a00; --bad:#c23b2e; --warn-bg:#fff2dc; --bad-bg:#fde6e3; --ok-bg:#e3f3e8;
-  --display:"Do Hyeon","IBM Plex Sans KR",system-ui,sans-serif;
-  --body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0e1716; --panel:#16211f; --fg:#e4efed; --muted:#93a6a2; --line:#26353a;
-  --accent:#4cc3b0; --accent-ink:#06201c; --soft:#163a35;
-  --ok:#6fcf93; --warn:#f0b04a; --bad:#ff7a6b; --warn-bg:#3a2a10; --bad-bg:#3d1914; --ok-bg:#163223; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0e1716; --panel:#16211f; --fg:#e4efed; --muted:#93a6a2; --line:#26353a;
-  --accent:#4cc3b0; --accent-ink:#06201c; --soft:#163a35;
-  --ok:#6fcf93; --warn:#f0b04a; --bad:#ff7a6b; --warn-bg:#3a2a10; --bad-bg:#3d1914; --ok-bg:#163223; color-scheme:dark}
-html,body{height:100%}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
-.app{max-width:520px;margin:0 auto;padding:16px 16px 120px;display:flex;flex-direction:column;gap:16px}
-header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
-h1{font-family:var(--display);font-weight:400;font-size:2rem;margin:0;letter-spacing:.01em;line-height:1}
-.sub{color:var(--muted);font-size:.85rem;margin-top:4px}
-.temps{display:flex;gap:6px;font-family:var(--mono);font-size:.75rem}
-.temps span{background:var(--soft);color:var(--accent);padding:3px 8px;border-radius:999px;white-space:nowrap}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.stat b{display:block;font-family:var(--display);font-weight:400;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
-.stat small{color:var(--muted);font-size:.75rem}
-.stat.bad b{color:var(--bad)} .stat.warn b{color:var(--warn)}
-.tabs{display:flex;gap:6px;overflow-x:auto}
-.tabs button{flex:1;min-width:64px;border:1px solid var(--line);background:var(--panel);color:var(--fg);font:inherit;font-weight:500;padding:8px 10px;border-radius:10px;cursor:pointer}
-.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.list{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.item{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line)}
-.item:first-child{border-top:0}
-.ico{width:36px;height:36px;border-radius:10px;background:var(--soft);display:grid;place-items:center;font-size:1.1rem}
-.name{min-width:0}
-.name div{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.name small{color:var(--muted);font-size:.78rem}
-.dday{font-family:var(--mono);font-size:.78rem;padding:3px 8px;border-radius:999px;white-space:nowrap;font-variant-numeric:tabular-nums}
-.dday.ok{background:var(--ok-bg);color:var(--ok)} .dday.warn{background:var(--warn-bg);color:var(--warn)} .dday.bad{background:var(--bad-bg);color:var(--bad)}
-.del{border:0;background:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:4px 6px;border-radius:8px}
-.del:hover{color:var(--bad)}
-.empty{padding:28px 16px;text-align:center;color:var(--muted)}
-.note{color:var(--muted);font-size:.78rem;text-align:center}
-.addbar{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px))}
-.addbar form{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr auto auto auto;gap:6px}
-.addbar input,.addbar select{font:inherit;font-size:.9rem;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg)}
-.addbar input[type=date]{width:8.6rem}
-.addbar button{font:inherit;font-weight:600;border:0;border-radius:10px;padding:9px 14px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
-@media (max-width:420px){.addbar form{grid-template-columns:1fr 1fr}.addbar input[type=date]{width:100%}}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-</style>
-
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<!--
+  FridgeMate 화면 구조 (공통 기반 — 이정남)
+  각 담당자는 아래 "자리(area)"만 자기 JS 파일에서 채웁니다. 이 파일은 되도록 고치지 마세요.
+  담당 파일 목록과 규칙은 CONTRIBUTING.md 를 보세요.
+-->
 <div class="app">
-  <header>
+  <header class="top">
     <div>
       <h1>FridgeMate</h1>
-      <div class="sub">우리 집 냉장고 재료와 유통기한</div>
+      <div class="sub">우리 집 냉장고 재료와 소비기한</div>
     </div>
-    <div class="temps"><span>냉장 3℃</span><span>냉동 −18℃</span></div>
+    <span class="offline" id="offline-badge" hidden>오프라인</span>
   </header>
 
-  <section class="summary" aria-label="요약">
-    <div class="stat"><b id="sTotal">0</b><small>보관 중</small></div>
-    <div class="stat warn"><b id="sSoon">0</b><small>3일 이내</small></div>
-    <div class="stat bad"><b id="sOver">0</b><small>기한 지남</small></div>
+  <!-- 탭 1: 목록 -->
+  <section class="view" id="view-list" data-tab="list">
+    <div id="alert-area"></div>      <!-- 임박 요약 (js/alert.js · 이지선) -->
+    <div id="list-area"></div>       <!-- 식재료 목록 (js/list.js · 이정남) -->
   </section>
 
-  <nav class="tabs" id="tabs" aria-label="보관 위치">
-    <button data-f="전체" aria-pressed="true">전체</button>
-    <button data-f="냉장" aria-pressed="false">냉장</button>
-    <button data-f="냉동" aria-pressed="false">냉동</button>
-    <button data-f="실온" aria-pressed="false">실온</button>
-  </nav>
+  <!-- 탭 2: 등록 -->
+  <section class="view" id="view-register" data-tab="register" hidden>
+    <div id="register-area"></div>   <!-- 등록 화면 (js/register.js · 이석환) -->
+  </section>
 
-  <section class="list" id="list" aria-live="polite"></section>
-  <p class="note">처음 보이는 재료는 예시예요. 추가한 재료는 이 기기 브라우저에만 저장돼요.</p>
+  <!-- 탭 3: 레시피 -->
+  <section class="view" id="view-recipe" data-tab="recipe" hidden>
+    <div id="recipe-area"></div>     <!-- 레시피 추천 (js/recipe.js · 이정남) -->
+  </section>
+
+  <!-- 탭 4: 설정 -->
+  <section class="view" id="view-settings" data-tab="settings" hidden>
+    <div id="settings-area"></div>   <!-- 알림 기준 설정 (js/settings.js · 이지선) -->
+    <div id="backup-area"></div>     <!-- 백업·복원 (js/backup.js · 이지선) -->
+  </section>
 </div>
 
-<div class="addbar">
-  <form id="form">
-    <input id="fName" placeholder="재료 이름 (예: 우유)" required aria-label="재료 이름">
-    <select id="fPlace" aria-label="보관 위치"><option>냉장</option><option>냉동</option><option>실온</option></select>
-    <input id="fDate" type="date" required aria-label="유통기한">
-    <button type="submit">추가</button>
-  </form>
-</div>
+<!-- 하단 탭 -->
+<nav class="tabbar" id="tabbar" aria-label="메뉴">
+  <button data-tab="list" aria-current="page"><span aria-hidden="true">🧊</span>목록</button>
+  <button data-tab="register"><span aria-hidden="true">➕</span>등록</button>
+  <button data-tab="recipe"><span aria-hidden="true">🍳</span>레시피</button>
+  <button data-tab="settings"><span aria-hidden="true">⚙️</span>설정</button>
+</nav>
 
-<script>
-const KEY='fridgemate-items';
-const icons={우유:'🥛',계란:'🥚',두부:'🧈',대파:'🥬',삼겹살:'🥓',만두:'🥟',양파:'🧅',사과:'🍎'};
-const day=n=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
-const sample=[
-  {id:1,name:'우유',place:'냉장',date:day(2)},
-  {id:2,name:'계란',place:'냉장',date:day(9)},
-  {id:3,name:'두부',place:'냉장',date:day(-1)},
-  {id:4,name:'대파',place:'냉장',date:day(4)},
-  {id:5,name:'만두',place:'냉동',date:day(60)},
-  {id:6,name:'삼겹살',place:'냉동',date:day(25)},
-  {id:7,name:'양파',place:'실온',date:day(12)}
-];
-let items, filter='전체';
-try{items=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!Array.isArray(items))items=sample;
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(items))}catch(e){}};
-const diff=s=>{const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(s+'T00:00:00')-t)/864e5)};
-function render(){
-  const list=document.getElementById('list');
-  const shown=items.filter(i=>filter==='전체'||i.place===filter).sort((a,b)=>diff(a.date)-diff(b.date));
-  document.getElementById('sTotal').textContent=items.length;
-  document.getElementById('sSoon').textContent=items.filter(i=>{const d=diff(i.date);return d>=0&&d<=3}).length;
-  document.getElementById('sOver').textContent=items.filter(i=>diff(i.date)<0).length;
-  if(!shown.length){list.innerHTML='<div class="empty">아직 재료가 없어요. 아래에서 첫 재료를 추가해 보세요.</div>';return}
-  list.innerHTML='';
-  shown.forEach(i=>{
-    const d=diff(i.date), cls=d<0?'bad':d<=3?'warn':'ok', label=d<0?`D+${-d}`:d===0?'D-DAY':`D-${d}`;
-    const row=document.createElement('div');row.className='item';
-    row.innerHTML=`<div class="ico">${icons[i.name]||'🧊'}</div>
-      <div class="name"><div></div><small>${i.place} · ${i.date.replaceAll('-','.')}</small></div>
-      <span class="dday ${cls}">${label}</span>
-      <button class="del" aria-label="${i.name} 삭제">✕</button>`;
-    row.querySelector('.name div').textContent=i.name;
-    row.querySelector('.del').onclick=()=>{items=items.filter(x=>x.id!==i.id);save();render()};
-    list.appendChild(row);
-  });
-}
-document.getElementById('tabs').onclick=e=>{
-  const b=e.target.closest('button');if(!b)return;filter=b.dataset.f;
-  document.querySelectorAll('#tabs button').forEach(x=>x.setAttribute('aria-pressed',x===b));render();
-};
-document.getElementById('fDate').value=day(7);
-document.getElementById('form').onsubmit=e=>{
-  e.preventDefault();
-  const name=document.getElementById('fName').value.trim();if(!name)return;
-  items.push({id:Date.now(),name,place:document.getElementById('fPlace').value,date:document.getElementById('fDate').value});
-  save();e.target.reset();document.getElementById('fDate').value=day(7);render();
-};
-render();
-</script>
+<div id="sheet-area"></div>  <!-- 아래에서 올라오는 창(소비·폐기 처리 등)을 띄우는 자리 -->
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
+<!-- 1) 데이터 -->
+<script src="data/foods.js"></script>
+<script src="data/recipes.js"></script>
+<!-- 2) 공통 기반 (이정남) — 순서 바꾸지 마세요 -->
+<script src="js/common/utils.js"></script>
+<script src="js/common/storage.js"></script>
+<!-- 3) 기능 파일 (담당자별) -->
+<script src="js/list.js"></script>
+<script src="js/recipe.js"></script>
+<script src="js/register.js"></script>
+<script src="js/barcode.js"></script>
+<script src="js/ocr.js"></script>
+<script src="js/alert.js"></script>
+<script src="js/process.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/backup.js"></script>
+<!-- 4) 앱 시작 (맨 마지막) -->
+<script src="js/common/app.js"></script>
 </body>
 </html>

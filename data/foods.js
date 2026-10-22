@@ -1,0 +1,41 @@
+/* 내장 품목 사전 (DAT-009) — 자동완성과 소비기한 기본값에 사용
+ * 형식: { name: 품목명, category: 분류, storage: 기본 보관 위치, days: 권장 보관일수, emoji }
+ * 권장 보관일수는 일반적인 가정 보관 기준의 참고값입니다. 목표: 200개 이상 (현재는 시작용)
+ * 추가할 때는 같은 형식으로 한 줄씩 넣어 주세요. (작성: FridgeMate 팀) */
+window.FM_FOODS = [
+  { name: '우유', category: '유제품', storage: '냉장', days: 7, emoji: '🥛' },
+  { name: '요거트', category: '유제품', storage: '냉장', days: 10, emoji: '🥣' },
+  { name: '치즈', category: '유제품', storage: '냉장', days: 21, emoji: '🧀' },
+  { name: '버터', category: '유제품', storage: '냉장', days: 60, emoji: '🧈' },
+  { name: '계란', category: '유제품', storage: '냉장', days: 21, emoji: '🥚' },
+  { name: '두부', category: '가공식품', storage: '냉장', days: 5, emoji: '🧈' },
+  { name: '햄', category: '가공식품', storage: '냉장', days: 14, emoji: '🥓' },
+  { name: '소시지', category: '가공식품', storage: '냉장', days: 14, emoji: '🌭' },
+  { name: '김치', category: '반찬', storage: '냉장', days: 30, emoji: '🥬' },
+  { name: '대파', category: '채소', storage: '냉장', days: 7, emoji: '🌿' },
+  { name: '양파', category: '채소', storage: '실온', days: 30, emoji: '🧅' },
+  { name: '감자', category: '채소', storage: '실온', days: 21, emoji: '🥔' },
+  { name: '당근', category: '채소', storage: '냉장', days: 14, emoji: '🥕' },
+  { name: '애호박', category: '채소', storage: '냉장', days: 7, emoji: '🥒' },
+  { name: '오이', category: '채소', storage: '냉장', days: 7, emoji: '🥒' },
+  { name: '양배추', category: '채소', storage: '냉장', days: 14, emoji: '🥬' },
+  { name: '상추', category: '채소', storage: '냉장', days: 5, emoji: '🥬' },
+  { name: '버섯', category: '채소', storage: '냉장', days: 5, emoji: '🍄' },
+  { name: '마늘', category: '채소', storage: '냉장', days: 30, emoji: '🧄' },
+  { name: '토마토', category: '채소', storage: '냉장', days: 7, emoji: '🍅' },
+  { name: '사과', category: '과일', storage: '냉장', days: 21, emoji: '🍎' },
+  { name: '바나나', category: '과일', storage: '실온', days: 5, emoji: '🍌' },
+  { name: '딸기', category: '과일', storage: '냉장', days: 3, emoji: '🍓' },
+  { name: '돼지고기', category: '육류', storage: '냉장', days: 3, emoji: '🥩' },
+  { name: '삼겹살', category: '육류', storage: '냉장', days: 3, emoji: '🥓' },
+  { name: '소고기', category: '육류', storage: '냉장', days: 3, emoji: '🥩' },
+  { name: '닭고기', category: '육류', storage: '냉장', days: 2, emoji: '🍗' },
+  { name: '고등어', category: '수산물', storage: '냉장', days: 2, emoji: '🐟' },
+  { name: '새우', category: '수산물', storage: '냉동', days: 90, emoji: '🦐' },
+  { name: '만두', category: '냉동식품', storage: '냉동', days: 180, emoji: '🥟' },
+  { name: '아이스크림', category: '냉동식품', storage: '냉동', days: 365, emoji: '🍨' },
+  { name: '어묵', category: '가공식품', storage: '냉장', days: 10, emoji: '🍢' },
+  { name: '밥', category: '반찬', storage: '냉장', days: 2, emoji: '🍚' },
+  { name: '식빵', category: '가공식품', storage: '실온', days: 4, emoji: '🍞' },
+  { name: '주스', category: '음료', storage: '냉장', days: 7, emoji: '🧃' }
+];
