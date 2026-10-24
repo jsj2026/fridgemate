@@ -110,6 +110,21 @@ h2{font-family:var(--display);font-weight:400;font-size:1.4rem;margin:0 0 8px}
 .rc-chip.have{background:var(--ok-bg);color:var(--ok)}
 .rc-chip.urgent{background:var(--soon-bg);color:var(--soon)}
 .rc-chip.missing{background:var(--over-bg);color:var(--over)}
+.rc-meta{display:flex;flex-wrap:wrap;gap:6px;color:var(--muted);font-size:.8rem}
+.rc-detail{display:flex;flex-direction:column;gap:8px}
+.rc-detail h4{margin:8px 0 0;font-size:.92rem}
+.rc-ing{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rc-ing li{display:flex;align-items:center;gap:10px;padding:9px 12px;border-top:1px solid var(--line);font-size:.9rem}
+.rc-ing li:first-child{border-top:0}
+.rc-ing-name{flex:1;font-weight:500}
+.rc-ing-amt{color:var(--muted);text-align:right}
+.rc-ing .rc-chip{margin:0;font-size:.74rem;padding:2px 8px}
+.rc-steps{margin:0;padding-left:0;list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:8px}
+.rc-steps li{counter-increment:step;display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:.92rem;line-height:1.55}
+.rc-steps li::before{content:counter(step);width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.rc-tip{background:var(--soon-bg);border-radius:12px;padding:10px 12px;font-size:.88rem}
+.rc-src{font-size:.76rem;margin:0}
 
 /* [이지선] 임박 요약 (alert.js) */
 .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
